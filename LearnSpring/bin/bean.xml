@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"   
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"   
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans    
+                           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                           http://www.springframework.org/schema/context
+           					http://www.springframework.org/schema/context/spring-context-3.0.xsd
+           					http://www.springframework.org/schema/aop
+           					http://www.springframework.org/schema/aop/spring-aop-3.0.xsd"> 
+     <!-- 注入对象类型属性 -->
+     <!-- 1生成service和dao对象 -->      			
+     <bean id="dao" class="cn.learn.ioc.UserDao"></bean>
+     <bean id="userService" class="cn.learn.ioc.UserService">
+     	<!-- 注入dao对象  不能使用value ，name为UserService类定义的dao属性名称 -->
+     	<property name="userDao" ref="dao"></property>
+     </bean>
+     <!-- p名称空间注入值 -->
+     <bean id="person" class="cn.learn.ioc.Person" p:name="紫妈">
+     	<!-- array -->
+     	<property name="arrs">
+     		<list>
+     			<value>小紫</value>
+     			<value>紫妹</value>
+     			<value>紫妈</value>
+     		</list>
+     	</property>
+     	<!-- list -->
+     	<property name="list">
+     		<list>
+     			<value>幽幽子</value>
+     			<value>吃货</value>
+     			<value>亡灵</value>
+     		</list>
+     	</property>
+     	<!-- map -->
+     	<property name="map">
+     		<map>
+     			<entry key="aa" value="123"></entry>
+     			<entry key="ab" value="121"></entry>
+     			<entry key="an" value="125"></entry>
+     		</map>
+     	</property>
+     	<!-- propertites -->
+     	<property name="propertites">
+     		<props>
+     			<prop key="DriverClass">com.jdbc.mysql</prop>
+     			<prop key="username">root</prop>
+     		</props>
+     	</property>
+     </bean>
+     
+     <!--使用注解形式  -->
+     <context:component-scan base-package="cn.learn"></context:component-scan>
+     
+     <bean id="bookService" class="cn.learn.xmlAnno.BookService"></bean>
+     <bean id="orderDao" class="cn.learn.xmlAnno.OrderDao"></bean>
+     <bean id="bookDao" class="cn.learn.xmlAnno.BookDao"></bean>
+     
+     <!-- 1、配置对象 -->
+     <bean id="eat" class="cn.learn.aop.EatIce"></bean>
+     <bean id="wash" class="cn.learn.aop.WashHand"></bean>
+     <!-- 2、配置切点 -->
+     <aop:config>
+        <!-- 需要增强的类 -->
+     	<aop:pointcut id="point" expression="execution(* cn.learn.aop.EatIce.*(..))"/>
+     	<!--3、切面  -->
+     	<aop:aspect ref="wash">
+     		<aop:before method="wash1" pointcut-ref="point"/>
+     	    <aop:after method="washBowl" pointcut-ref="point"/>
+     	    <aop:around method="around" pointcut-ref="point"/>
+     	</aop:aspect>
+     </aop:config>
+     
+</beans>
